@@ -1,7 +1,9 @@
 import re
+from pathlib import Path
 from tkinter import END, DISABLED, NORMAL
 from tkinter.scrolledtext import ScrolledText
-from pathlib import Path
+
+
 class FileEditorWidget(ScrolledText):
     def __init__(self, master=None, file_path=None, open_func=None, **kwargs):
         super().__init__(master, **kwargs)

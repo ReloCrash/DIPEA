@@ -1,15 +1,9 @@
-import math
 import os
-import sys
 import threading
 from tkinter import *
 from tkinter import ttk
-
 from tkinter.filedialog import asksaveasfilename, askopenfilename
 from tkinter.scrolledtext import ScrolledText
-import subprocess
-
-import chardet as chardet
 
 from leftpanel import FileEditorWidget
 from pacode_l import PaCodeL
@@ -64,6 +58,7 @@ class Application(Tk):
         # create output window to display output of written code
         self.output_window = ScrolledText(self.window, height=10)
         self.left_panel = FileEditorWidget(self.window, font=("helvetica 12"), width=25, open_func=self.open_file)
+        #self.right_panel = ScrolledText(self.window, font=("helvetica 12"), width=25)
 
         self.window.grid_columnconfigure(2, weight=1)
         self.window.grid_columnconfigure(2, weight=3)
@@ -77,6 +72,7 @@ class Application(Tk):
         self.editor.grid(row=0, column=2, sticky="nsew")
         self.output_window.grid(row=1, column=0, columnspan=3, sticky="ew")
         self.left_panel.grid(row=0, column=0, sticky="ns")
+        #self.right_panel.grid(row=0, column=3, rowspan=3,  sticky="ns")
 
 
         self.window.geometry("+200+200")
@@ -95,7 +91,7 @@ class Application(Tk):
             open_path = askopenfilename(filetypes=[("Pacole File", "*.pacl")])
         file_path = open_path
         print(file_path)
-        with open(file_path, "r") as file:
+        with open(file_path, "r", encoding='utf-8') as file:
             code = file.read()
             self.editor.delete(1.0, END)
             self.editor.insert(1.0, code)
@@ -153,13 +149,16 @@ class Application(Tk):
         output_buffer = ""
         input_detected = False
         while True:
-            output = process.stdout.read(1)
-            #print(output)
-            #output = output.encode("utf-16")
-
-            #res = chardet.detect(output)
-            #print(res["encoding"])
+            output = process.stdout.read()
+            '''
             print(output)
+            output = output.encode("utf-8")
+
+            res = chardet.detect(output)
+            print(res["encoding"])
+            print(output)
+            '''
+            #output=self.convert_encoding(output)
             if output:
                 self.output_window.insert(END, output)
                 if output == "\n":
@@ -171,6 +170,8 @@ class Application(Tk):
             else:
                 break
         self.output_window.insert(END, "Процесс завершен")
+
+
 
     def run(self, event=None):
         self.save_file()
@@ -218,14 +219,13 @@ class Application(Tk):
         #print(self.input_data)
         self.output_window.insert(END, "\n")
 
-        process.stdin.write(f"{self.input_data}\n".encode("utf-8"))
+        process.stdin.write(f"{self.input_data}\n")
         # output_window.insert(1.0, f"{input_data}\n")
         process.stdin.flush()
 
     def update_line_numbers(self, event=None):
         text_content = self.editor.get("1.0", END)
         line_count = text_content.count("\n")
-
         line_numbers = "\n".join(str(i) for i in range(1, line_count + 1))
         self.line_number_widget.config(state=NORMAL)
         self.line_number_widget.delete("1.0", END)

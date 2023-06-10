@@ -1,3 +1,4 @@
+import math
 import os
 import re
 import subprocess
@@ -64,7 +65,7 @@ class PaCodeL:
     }
 
     def __init__(self):
-        self.user_data_folder = os.path.join(os.getenv("APPDATA"), "Local", "Dipea")
+        self.user_data_folder = os.path.join(os.getenv("LOCALAPPDATA"), "Dipea")
         os.makedirs(self.user_data_folder, exist_ok=True)  # Создание папки, если она не существует
 
     def run(self, file_path: str):
@@ -72,7 +73,7 @@ class PaCodeL:
         #, encoding="utf-8"
         with open(file_path, "r", encoding="utf-8") as file:
             code = file.read()
-        print("1")
+        #print("1")
         code = self.replace_keywords(code)
 
         if self.has_math_functions(code):
@@ -89,14 +90,28 @@ class PaCodeL:
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             bufsize=0,
-            text=True
+            text=True,
+            encoding = "utf-8"
         )
         #subprocess.run(["python", output_file_path])
         return process
-
     def replace_keywords(self, code: str) -> str:
+
+        code = code.replace("'",'"')
+        # TODO fix it in a proper way
+        string_map: list[str] = code.split('"')
+        size = math.floor(len(string_map) / 2)
+        # store all strings in map and replace it with corresponding number
+        for i in range(0, size):
+            code = code.replace(string_map[1 + 2 * i], "þ" + i.__str__())
+
+        # replace language keywords to python keywords
         for unknown_keyword, python_keyword in self.unknown_lang_to_python.items():
             code = re.sub(unknown_keyword, python_keyword, code)
+
+        # replace keywords back
+        for i in range(0, size):
+            code = code.replace("þ" + i.__str__(), string_map[1 + 2 * i])
         return code
 
     def has_math_functions(self, code: str) -> bool:
