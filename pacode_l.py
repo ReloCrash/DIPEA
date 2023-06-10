@@ -98,7 +98,7 @@ class PaCodeL:
     def replace_keywords(self, code: str) -> str:
 
         code = code.replace("'",'"')
-        # TODO fix it in a proper way
+        # TODO fix it in a proper way according to brackets sequence problem
         string_map: list[str] = code.split('"')
         size = math.floor(len(string_map) / 2)
         # store all strings in map and replace it with corresponding number
