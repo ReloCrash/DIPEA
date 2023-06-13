@@ -28,9 +28,12 @@ class RightPanel(tk.Frame):
         super().__init__(master)
         self.master = master
         self.file_path = file_path
+        #self.classes_info = extract_classes_info(self.file_path)
+        #self.create_widgets()
+    def setfilepath(self, file_path: str):
+        self.file_path = file_path
         self.classes_info = extract_classes_info(self.file_path)
         self.create_widgets()
-
     def create_widgets(self):
         for i, (class_name, base_classes, methods_and_vars) in enumerate(self.classes_info):
             if base_classes:

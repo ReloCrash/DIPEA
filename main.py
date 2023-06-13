@@ -7,6 +7,7 @@ from tkinter.scrolledtext import ScrolledText
 
 from leftpanel import FileEditorWidget
 from pacode_l import PaCodeL
+from rightpanel import RightPanel
 
 
 class Application(Tk):
@@ -19,7 +20,7 @@ class Application(Tk):
         sddg="#EEEEEE"
         self.window = Tk()
         #print(math.cos(4))
-        self.window.title("A PYTHON IDE")
+        self.window.title("DIPEA")
         # create and configure menu
         self.menu = Menu(self.window)
         self.window.config(menu=self.menu)
@@ -58,13 +59,16 @@ class Application(Tk):
         # create output window to display output of written code
         self.output_window = ScrolledText(self.window, height=10)
         self.left_panel = FileEditorWidget(self.window, font=("helvetica 12"), width=25, open_func=self.open_file)
-        #self.right_panel = ScrolledText(self.window, font=("helvetica 12"), width=25)
+        #TODO: fixed RightPanel
+        #self.right_panel = RightPanel(self.window)
+
 
         self.window.grid_columnconfigure(2, weight=1)
         self.window.grid_columnconfigure(2, weight=3)
         self.window.grid_rowconfigure(0, weight=1)
         self.window.grid_rowconfigure(1, weight=0)
         self.window.grid_columnconfigure(1, weight=0)
+        self.window.grid_columnconfigure(3, weight=1)
 
         self.line_number_widget.grid(row=0, column=1, sticky="ns")
         self.status_bars.grid(row=2, column=2, sticky="n")
@@ -125,7 +129,7 @@ class Application(Tk):
         global code, file_path
         #print("111")
         file_path = asksaveasfilename(defaultextension=".pacl",
-                                      filetypes=[("Pacole Files", "*.pacl"), ("All Files", "*.*")])
+                                      filetypes=[("Pacole F iles", "*.pacl"), ("All Files", "*.*")])
         print(file_path)
         if file_path:
             with open(file_path, "w", encoding='utf-8') as file:
@@ -252,9 +256,9 @@ class Application(Tk):
     # доавляем меню на пкм
     def create_PKMmenu(self, event=None):
         self.PKM_menu = Menu(self.window, tearoff=0)
-        self.PKM_menu.add_command(label="Cut", command=self.cut_text)
-        self.PKM_menu.add_command(label="Copy", command=self.copy_text)
-        self.PKM_menu.add_command(label="Paste", command=self.paste_text)
+        self.PKM_menu.add_command(label="Вырезать", accelerator="Ctrl+X", command=self.cut_text)
+        self.PKM_menu.add_command(label="Cкопироваь",accelerator="Ctrl+C", command=self.copy_text)
+        self.PKM_menu.add_command(label="Вставить",accelerator="Ctrl+V", command=self.paste_text)
     def create_Mainmenu(self, event=None):
         self.file_menu = Menu(self.menu, tearoff=0)
         self.edit_menu = Menu(self.menu, tearoff=0)
@@ -263,29 +267,29 @@ class Application(Tk):
         self.theme_menu = Menu(self.menu, tearoff=0)
 
         # add menu labels
-        self.menu.add_cascade(label="File", menu=self.file_menu)
-        self.menu.add_cascade(label="Edit", menu=self.edit_menu)
-        self.menu.add_cascade(label="Run", menu=self.run_menu)
-        self.menu.add_cascade(label="View", menu=self.view_menu)
-        self.menu.add_cascade(label="Theme", menu=self.theme_menu)
-        self.file_menu.add_command(label="Open", accelerator="Ctrl+O", command=self.open_file)
-        self.file_menu.add_command(label="Create", accelerator="Ctrl+N", command=self.create_file)
+        self.menu.add_cascade(label="Файл", menu=self.file_menu)
+        self.menu.add_cascade(label="Редактирование", menu=self.edit_menu)
+        self.menu.add_cascade(label="Пуск", menu=self.run_menu)
+        self.menu.add_cascade(label="Вид", menu=self.view_menu)
+        self.menu.add_cascade(label="Тема", menu=self.theme_menu)
+        self.file_menu.add_command(label="Открыть", accelerator="Ctrl+O", command=self.open_file)
+        self.file_menu.add_command(label="Создать", accelerator="Ctrl+N", command=self.create_file)
         self.file_menu.add_separator()
-        self.file_menu.add_command(label="Save", accelerator="Ctrl+S", command=self.save_file)
-        self.file_menu.add_command(label="Save As", accelerator="Ctrl+Shift+S", command=self.save_as)
+        self.file_menu.add_command(label="Сохранить", accelerator="Ctrl+S", command=self.save_file)
+        self.file_menu.add_command(label="Сохранить как", accelerator="Ctrl+Shift+S", command=self.save_as)
         self.file_menu.add_separator()
-        self.file_menu.add_command(label="Exit", accelerator="Ctrl+Q", command=self.close)
+        self.file_menu.add_command(label="Выход", accelerator="Ctrl+Q", command=self.close)
         # add commands in edit menu
-        self.edit_menu.add_command(label="Cut", accelerator="Ctrl+X", command=self.cut_text)
-        self.edit_menu.add_command(label="Copy", accelerator="Ctrl+C", command=self.copy_text)
-        self.edit_menu.add_command(label="Paste", accelerator="Ctrl+V", command=self.paste_text)
-        self.run_menu.add_command(label="Run", accelerator="F5", command=self.run)
+        self.edit_menu.add_command(label="Вырезать", accelerator="Ctrl+X", command=self.cut_text)
+        self.edit_menu.add_command(label="Скопировать", accelerator="Ctrl+C", command=self.copy_text)
+        self.edit_menu.add_command(label="Вставить", accelerator="Ctrl+V", command=self.paste_text)
+        self.run_menu.add_command(label="Запуск", accelerator="F5", command=self.run)
 
         self.show_status_bar = BooleanVar()
         self.show_status_bar.set(True)
 
-        self.theme_menu.add_command(label="light", command=self.light)
-        self.theme_menu.add_command(label="dark", command=self.dark)
+        self.theme_menu.add_command(label="Светлая", command=self.light)
+        self.theme_menu.add_command(label="Тёмная", command=self.dark)
 
     def hide_statusbar(self, event=None):
         global show_status_bar

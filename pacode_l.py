@@ -8,7 +8,7 @@ class PaCodeL:
     # Пример: "unknown_keyword": "python_keyword"
     unknown_lang_to_python = {
 
-        "и": "and",
+
         "проверка": "assert",
         "как": "as",
         "несинх": "async",
@@ -61,7 +61,9 @@ class PaCodeL:
         "номер": "index",
         "символ": "__getitem__",
         "юкод": "ord",
+        "и": "and",
         "юсим": "chr"
+
     }
 
     def __init__(self):
